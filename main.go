@@ -24,7 +24,7 @@ func main() {
 
 	http.HandleFunc("/", itemHandler)
 	http.HandleFunc("/create", itemCreate)
-	// http.HandleFunc("/update", itemUpdate)
+	http.HandleFunc("/update", itemUpdate)
 	// http.HandleFunc("/all", itemAll)
 	// http.HandleFunc("/delete", itemDelete)
 	http.ListenAndServe(port, nil)
@@ -65,13 +65,47 @@ func itemCreate(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// func itemUpdate(w http.ResponseWriter, r *http.Request) {
-// fmt.Println("Items updated");
+func itemUpdate(w http.ResponseWriter, r *http.Request) {
+fmt.Println("Items updated");
 
-// }
-// func itemAll(w http.ResponseWriter, r *http.Request) {
-// fmt.Println("All items called")
+if r.Method != http.MethodPut{
+	http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+	return
+} 
 
-// }
+var UpdateItem Item;
+decoder := json.NewDecoder(r.Body)
+if err := decoder.Decode(&UpdateItem); err != nil {
+	http.Error(w, err.Error(), http.StatusBadRequest)
+
+	return
+}
+for i, item := range items {
+
+	if item.ID == UpdateItem.ID {
+		items[i].ItemName = UpdateItem.ItemName
+		response := ItemResponse{
+			Message: fmt.Sprintf("%s (ID: %d) updated", UpdateItem.ItemName, UpdateItem.ID),
+		}
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+		fmt.Println(response)
+		return
+}
+
+
+
+
+
+
+}
+func itemAll(w http.ResponseWriter, r *http.Request) {
+fmt.Println("All items called")
+
+}
 // func itemDelete(w http.ResponseWriter, r *http.Request) {
 // fmt.Println("Item Deleted")
+}
