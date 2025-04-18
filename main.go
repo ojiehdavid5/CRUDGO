@@ -26,7 +26,7 @@ func main() {
 	http.HandleFunc("/create", itemCreate)
 	http.HandleFunc("/update", itemUpdate)
 	http.HandleFunc("/all", itemAll)
-	// http.HandleFunc("/delete", itemDelete)
+	http.HandleFunc("/delete", itemDelete)
 	http.ListenAndServe(port, nil)
 }
 func itemHandler(w http.ResponseWriter, r *http.Request) {
@@ -107,11 +107,40 @@ func itemAll(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	
+
 	fmt.Println("All items called")
 
 }
 
-// func itemDelete(w http.ResponseWriter, r *http.Request) {
-// fmt.Println("Item Deleted")
-//}
+func itemDelete(w http.ResponseWriter, r *http.Request) {
+
+	var itemDelete Item;
+	if r.Method != http.MethodDelete {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+	if err := json.NewDecoder(r.Body).Decode(&itemDelete); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	for i, existingItem := range items {
+		if existingItem.ID == itemDelete.ID {
+			items = append(items[:i], items[i+1:]...)
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+	}
+	response:=ItemResponse{
+		Message: fmt.Sprintf("Item with ID %d has been deleted", itemDelete.ID),}
+
+
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	fmt.Println(response)
+
+fmt.Println("Item Deleted")
+
+}
