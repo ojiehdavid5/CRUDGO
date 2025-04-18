@@ -25,7 +25,7 @@ func main() {
 	http.HandleFunc("/", itemHandler)
 	http.HandleFunc("/create", itemCreate)
 	http.HandleFunc("/update", itemUpdate)
-	// http.HandleFunc("/all", itemAll)
+	http.HandleFunc("/all", itemAll)
 	// http.HandleFunc("/delete", itemDelete)
 	http.ListenAndServe(port, nil)
 }
@@ -101,11 +101,11 @@ for i, item := range items {
 
 
 
-}
+}}
 func itemAll(w http.ResponseWriter, r *http.Request) {
 fmt.Println("All items called")
 
 }
 // func itemDelete(w http.ResponseWriter, r *http.Request) {
 // fmt.Println("Item Deleted")
-}
+//}
