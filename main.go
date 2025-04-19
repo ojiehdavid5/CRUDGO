@@ -16,6 +16,7 @@ type ItemResponse struct {
 }
 
 var items []Item
+
 var nextID = 1
 
 func main() {
@@ -30,7 +31,8 @@ func main() {
 	http.ListenAndServe(port, nil)
 }
 func itemHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(items)
+	fmt.Println(items);
+
 
 }
 func itemCreate(w http.ResponseWriter, r *http.Request) {
@@ -93,6 +95,7 @@ func itemUpdate(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			fmt.Println(response)
+			
 			return
 		}
 
